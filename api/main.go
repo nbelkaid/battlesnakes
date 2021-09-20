@@ -20,8 +20,6 @@ func main() {
 	host := os.Getenv("CONTAINER_DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
 
-	// db, err = gorm.Open("postgres", "host=db port=5432 user=postgres dbname=postgres sslmode=disable password=postgres")
-
 	dbConnString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		user,
 		pwd,

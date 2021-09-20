@@ -22,7 +22,8 @@ func isFoodNextTo(coord models.Coord, foods []models.Coord) bool {
 }
 
 //Base on Head coordinates and a obstacle Coordinate
-func removeNotPossibleMoveFromObstacle(possibleMoves map[string]bool, myHead, obstacle models.Coord) map[string]bool {
+func removeNotPossibleMoveFromObstacleNextTo(possibleMoves map[string]bool, myHead, obstacle models.Coord) map[string]bool {
+
 	if obstacle.X < myHead.X {
 		possibleMoves["left"] = false
 	} else if obstacle.X > myHead.X {
@@ -77,7 +78,7 @@ func getPossibleMoves(state models.GameState) map[string]bool {
 		for _, coord := range snake.Body {
 			//ToImprove : No need to considerate tail untill no food is next to head of current snake
 			if myHead.IsNextTo(coord) {
-				possibleMoves = removeNotPossibleMoveFromObstacle(possibleMoves, myHead, coord)
+				possibleMoves = removeNotPossibleMoveFromObstacleNextTo(possibleMoves, myHead, coord)
 			}
 
 		}
@@ -148,6 +149,7 @@ func move(state models.GameState) models.BattlesnakeMoveResponse {
 		return totalI < totalJ
 	})
 
+	//Then we try to go closer to the closest food available in depends of our safe moves
 	for _, food := range foods {
 		nextMove = moveToGetCloserToDest(safeMoves, myHead, food)
 		if nextMove != "" {
@@ -158,6 +160,7 @@ func move(state models.GameState) models.BattlesnakeMoveResponse {
 		}
 	}
 
+	//No food available to get Closer - Let's go random
 	nextMove = safeMoves[rand.Intn(len(safeMoves))]
 	log.Printf("%s MOVE %d: Random Move! Moving %s\n", state.Game.ID, state.Turn, nextMove)
 	return models.BattlesnakeMoveResponse{
@@ -165,6 +168,7 @@ func move(state models.GameState) models.BattlesnakeMoveResponse {
 	}
 }
 
+//HandleMove Handler that respond with the move to play for each turn of the game
 func HandleMove(w http.ResponseWriter, r *http.Request) {
 	state := models.GameState{}
 	err := json.NewDecoder(r.Body).Decode(&state)
@@ -175,8 +179,7 @@ func HandleMove(w http.ResponseWriter, r *http.Request) {
 
 	response := move(state)
 
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(response)
+	err = utils.Respond(w, response)
 	if err != nil {
 		log.Printf("ERROR: Failed to encode move response, %s", err)
 		return

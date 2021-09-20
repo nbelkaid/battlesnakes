@@ -10,7 +10,7 @@ var (
 	DB *gorm.DB
 )
 
-// ConfigRoute configure toutes les routes pour gérer la récupération d'image depuis S3.
+// ConfigRoute Handle Game endpoint part
 func ConfigRoute(dB *gorm.DB, r *mux.Router) error {
 	DB = dB
 

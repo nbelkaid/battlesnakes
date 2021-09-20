@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Struct use to store informations about the games played
 type GameLog struct {
 	ID         string    `json:"id" gorm:"type:uuid;column:id;primaryKey;"`
 	CreatedAt  time.Time `json:"created_at" gorm:"column:created_at;"`

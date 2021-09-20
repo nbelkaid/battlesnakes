@@ -67,6 +67,8 @@ type BattlesnakeMoveResponse struct {
 	Shout string `json:"shout,omitempty"`
 }
 
+//Check if current Coord are next to an other one
+// (Considerating that we can only move in x or y one at a time)
 func (c *Coord) IsNextTo(c2 Coord) bool {
 	dX := utils.Abs(c.X - c2.X)
 	dY := utils.Abs(c.Y - c2.Y)

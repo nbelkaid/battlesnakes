@@ -23,8 +23,11 @@ func end(state models.GameState) {
 	gameLog.End = time.Now()
 	gameLog.NbTurn = state.Turn
 	if len(state.Board.Snakes) == 1 && state.Board.Snakes[0].Head == state.You.Head {
-		// I Won !
+		// I Won!
+		gameLog.Position = 1
 		gameLog.Won = true
+	} else if len(state.Board.Snakes) == 1 {
+		gameLog.Position = len(state.Board.Snakes) + 1
 	}
 
 	//Save & Commit
@@ -38,6 +41,7 @@ func end(state models.GameState) {
 	log.Printf("%s END\n\n", state.Game.ID)
 }
 
+//Handler for /end endpoint - No response Needed - Store in Database some log about the game just ended
 func HandleEnd(w http.ResponseWriter, r *http.Request) {
 	state := models.GameState{}
 
@@ -48,6 +52,4 @@ func HandleEnd(w http.ResponseWriter, r *http.Request) {
 	}
 
 	end(state)
-
-	// Nothing to respond with here
 }

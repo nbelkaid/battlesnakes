@@ -11,6 +11,7 @@ import (
 	models "github.com/nbelkaid/battlesnakes/api/models"
 )
 
+// Save the information of the game started in Database
 func start(state models.GameState) {
 
 	tx := DB.BeginTx(context.Background(), nil)
@@ -38,8 +39,10 @@ func start(state models.GameState) {
 	log.Printf("START\n")
 }
 
+//HandleStart Handler called when a new game is initialized
 func HandleStart(w http.ResponseWriter, r *http.Request) {
 	state := models.GameState{}
+
 	err := json.NewDecoder(r.Body).Decode(&state)
 	if err != nil {
 		log.Printf("ERROR: Failed to decode start json, %s", err)
